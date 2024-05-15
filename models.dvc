@@ -1,0 +1,6 @@
+outs:
+- md5: ea9619b25fde4649c1b929151694bed1.dir
+  size: 18210
+  nfiles: 1
+  hash: md5
+  path: models
