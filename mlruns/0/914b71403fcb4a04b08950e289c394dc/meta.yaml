@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/914b71403fcb4a04b08950e289c394dc/artifacts
+end_time: 1715683415253
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 914b71403fcb4a04b08950e289c394dc
+run_name: upbeat-frog-67
+run_uuid: 914b71403fcb4a04b08950e289c394dc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1715683415046
+status: 3
+tags: []
+user_id: al
