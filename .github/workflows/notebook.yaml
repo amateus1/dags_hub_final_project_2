@@ -15,7 +15,7 @@ jobs:
         uses: trsvchn/colab-badge-action@v4
         with:
           check: "all"
-          target_branch: master
+          target_branch: main
           target_repository: amateus1/dags_hub_final_project_2
           update: true
       
