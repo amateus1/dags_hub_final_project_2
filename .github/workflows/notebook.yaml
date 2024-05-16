@@ -16,7 +16,7 @@ jobs:
         with:
           check: "all"
           target_branch: master
-          target_repository: DataBootcamp2021/employee_churn
+          target_repository: amateus1/dags_hub_final_project_2
           update: true
       
       - name: Add, commit, and push changes
