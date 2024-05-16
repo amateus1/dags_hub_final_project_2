@@ -43,5 +43,3 @@ jobs:
         with:
           message: black check
           push: true
-
-      
