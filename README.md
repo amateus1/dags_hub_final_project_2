@@ -1,6 +1,6 @@
 # Employee Future Prediction
 
-## Motivation
+## Motivations
 In a data science team, it is common to continuously try to find a better model than the existing one in production. It is important to make sure the service doesn't break when the new model is deployed. 
 
 This project demonstrates how to use DagsHub and GitHub Actions to:
