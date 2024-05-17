@@ -24,6 +24,10 @@ jobs:
         with:
           message: Add Colab badge
           push: true
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
   black:
     name: Black Check for Jupyter notebooks
     runs-on: ubuntu-latest
