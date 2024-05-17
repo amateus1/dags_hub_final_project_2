@@ -6,7 +6,7 @@ from hydra import compose, initialize
 from patsy import dmatrix
 from pydantic import BaseModel
 
-with initialize( config_path="../../config"):
+with initialize(config_path="../../config"):
     config = compose(config_name="main")
     FEATURES = config.process.features
     MODEL_NAME = config.model.name
@@ -50,12 +50,13 @@ def transform_data(df: pd.DataFrame):
     dummy_X = rename_columns(dummy_X)
     return dummy_X.iloc[0, :].values.reshape(1, -1)
 
+
 model = bentoml.xgboost.get_runner(
     f"{MODEL_NAME}:latest", method_name="predict"
 )
-#model = bentoml.picklable_model.load_runner(
+# model = bentoml.picklable_model.load_runner(
 #    f"{MODEL_NAME}:latest", method_name="predict"
-#)
+# )
 
 # Create service with the model
 service = bentoml.Service("predict_employee", runners=[model])

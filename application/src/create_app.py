@@ -45,12 +45,16 @@ def write_predictions(data: dict):
             prediction = response.text[0]
 
             if prediction == "0":
-                st.write("This employee is predicted to stay more than two years.")
+                st.write(
+                    "This employee is predicted to stay more than two years."
+                )
             else:
                 st.write("This employee is predicted to leave in two years.")
         except requests.exceptions.RequestException as e:
             st.error(f"Error: {e}")
-            st.error(f"Response Text: {response.text if response else 'No response received'}")
+            st.error(
+                f"Response Text: {response.text if response else 'No response received'}"
+            )
 
 
 def main():

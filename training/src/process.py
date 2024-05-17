@@ -5,10 +5,12 @@ from omegaconf import DictConfig
 from patsy import dmatrices
 from sklearn.model_selection import train_test_split
 
+
 def get_data(raw_path: str):
     data = pd.read_csv(raw_path)
     print(f"Data loaded from {raw_path}")
     return data
+
 
 def get_features(target: str, features: list, data: pd.DataFrame):
     feature_str = " + ".join(features)
@@ -18,6 +20,7 @@ def get_features(target: str, features: list, data: pd.DataFrame):
     print(f"Features and target extracted: {feature_str}")
     return y, X
 
+
 def rename_columns(X):
     # Correctly escape the square brackets to ensure they're treated as literal characters in the regex
     X.columns = X.columns.str.replace(r"\[", "_", regex=True).str.replace(
@@ -25,6 +28,7 @@ def rename_columns(X):
     )
     print(f"Columns renamed: {X.columns}")
     return X
+
 
 @hydra.main(config_path="../../config", config_name="main")
 def process_data(config: DictConfig):
@@ -46,6 +50,7 @@ def process_data(config: DictConfig):
     y_train.to_csv(abspath(config.processed.y_train.path), index=False)
     y_test.to_csv(abspath(config.processed.y_test.path), index=False)
     print("Data processing completed and saved.")
+
 
 if __name__ == "__main__":
     process_data()
