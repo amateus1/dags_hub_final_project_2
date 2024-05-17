@@ -45,10 +45,6 @@ jobs:
       - name: Run Black
         run: black --exclude ./env/ --check . 
 
-      - name: Checkout 
-        id: checkout
-        uses: actions/checkout@v2
-
       - name: black
         uses: jpetrucciani/black-check@master
         with:
