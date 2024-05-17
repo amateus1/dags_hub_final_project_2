@@ -1,35 +1,20 @@
-name: Adjust notebook
-on: [push]
-
+name: Deploy App
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - config/**
+      - training/**
+      - application/**
+      - .github/workflows/deploy_app.yaml
 jobs:
-  add_badges:
-    name: Add Google Colab badge to notebook
+  deploy_app:
+    name: Deploy App
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 
-        uses: actions/checkout@v2
-
-      - name: Add/Update badges
-        uses: trsvchn/colab-badge-action@v4
-        with:
-          check: "all"
-          target_branch: main
-          target_repository: amateus1/dags_hub_final_project_2
-          update: true
-      
-      - name: Add, commit, and push changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          author_name: "GitHub Action"
-          author_email: "github-action@users.noreply.github.com"
-          message: "Add Colab badge"
-          push: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.MLOPS }}
-
-  black:
-    name: Black Check for Jupyter notebooks
-    runs-on: ubuntu-latest
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }} 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -38,22 +23,50 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+          cache: pip
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install black[jupyter]
-
-      - name: Run Black
-        run: black --exclude ./env/ .
-
-      - name: Add, commit, and push changes
-        uses: EndBug/add-and-commit@v9
+      - name: Cache
+        uses: actions/cache@v2
         with:
-          author_name: "GitHub Action"
-          author_email: "github-action@users.noreply.github.com"
-          message: "Reformat code with black"
-          add: "."
-          push: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.MLOPS }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/application/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install packages
+        run: |
+          pip install -r application/requirements.txt
+          pip install dvc fsspec==2023.4.0  # Specify compatible version of fsspec
+
+      - name: Pull data
+        run: |
+          dvc remote modify origin --local auth basic
+          dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
+          dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+          dvc pull -r origin train_model
+
+      - name: Save model to BentoML local store
+        run: python application/src/save_model_to_bentoml.py
+
+      - name: Build Bentos
+        run: bentoml build
+
+      - name: Heroku login credentials
+        run: |
+          cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          EOF
+        
+      - name: Login to Heroku container
+        run: heroku container:login
+
+      - name: Containerize Bentos, push it to the Heroku app, and release the app
+        run: |
+          cd $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
+          APP_NAME=employee-predict-1
+          heroku container:push web --app $APP_NAME  --context-path=../..
+          heroku container:release web --app $APP_NAME
