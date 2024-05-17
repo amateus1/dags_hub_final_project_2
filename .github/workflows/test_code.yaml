@@ -6,6 +6,8 @@ on:
       - training/**
       - application/**
       - .github/workflows/test_training.yaml
+  workflow_dispatch:  # Add this line to allow manual triggering
+
 jobs:
   test_model:
     name: Test processed code and model
