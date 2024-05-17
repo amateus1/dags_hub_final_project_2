@@ -35,19 +35,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 	  
-	  - name: Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 	  
-	  - name: Install dependencies
+      - name: Install dependencies
         run: |
           pip install black[jupyter]
       
-	  - name: Run Black
+      - name: Run Black
         run: black --exclude ./env/ --check . 
       
-	  - name: Checkout 
+      - name: Checkout 
         id: checkout
         uses: actions/checkout@v2
 
