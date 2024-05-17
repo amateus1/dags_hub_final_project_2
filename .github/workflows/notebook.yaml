@@ -7,11 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
-        id: checkout
         uses: actions/checkout@v2
 
       - name: Add/Update badges
-        id: badges
         uses: trsvchn/colab-badge-action@v4
         with:
           check: "all"
@@ -22,19 +20,20 @@ jobs:
       - name: Add, commit, and push changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: Add Colab badge
+          author_name: "GitHub Action"
+          author_email: "github-action@users.noreply.github.com"
+          message: "Add Colab badge"
           push: true
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.MLOPS }}
-          
+
   black:
     name: Black Check for Jupyter notebooks
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -46,21 +45,15 @@ jobs:
           pip install black[jupyter]
 
       - name: Run Black
-        run: black --exclude ./env/ --check . 
-      
-      - name: Checkout 
-        uses: actions/checkout@v2
+        run: black --exclude ./env/ .
 
-      - name: black
-        uses: jpetrucciani/black-check@master
-        with:
-          path: '.'
-          black_flags: '--exclude ./env/'
-      
       - name: Add, commit, and push changes
         uses: EndBug/add-and-commit@v9
         with:
           author_name: "GitHub Action"
           author_email: "github-action@users.noreply.github.com"
-          message: black check
+          message: "Reformat code with black"
+          add: "."
           push: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.MLOPS }}
