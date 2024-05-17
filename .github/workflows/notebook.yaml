@@ -26,7 +26,7 @@ jobs:
           push: true
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.mlops }}
+          GITHUB_TOKEN: ${{ secrets.MLOPS }}
           
   black:
     name: Black Check for Jupyter notebooks
